@@ -1,7 +1,7 @@
 # BLITZ-Q
 
-## Overview
-This project implements authentication using Google OAuth and integrates with Google's Gemini API for AI functionality.
+## WHY I REUPLOADED
+Because of API keys exposure...
 
 ## Environment Setup
 

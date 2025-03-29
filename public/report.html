@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blitz-Q</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap');
+
+    :root {
+        --primary-color: #FF7A00;  /* Vibrant orange */
+        --primary-light: #FFF3E0;  /* Light orange/cream */
+        --secondary-color: #FFD600; /* Vibrant yellow */
+        --background-color: #FFFAF0; /* Warm light cream */
+        --text-color: #3D3D3D;  /* Slightly adjusted darker gray */
+        --gray-color: #8D8883;  /* Warmer medium gray */
+        --light-gray: #F5F1EA;  /* Warmer light gray */
+        --white: #ffffff;  /* White */
+        --danger-color: #f04452;  /* Red for danger */
+        --success-color: #00c471;  /* Green for success */
+        --border-color: #EEEAE0;  /* Warmer very light gray for borders */
+        --shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
+        --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+    }
+
+    /* Main Content */
+    .main-content {
+        flex-grow: 1;
+        padding: 32px;
+        background-color: var(--background-color);
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 36px;
+    }
+
+    .page-header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text-color);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .profile-area {
+        position: relative;
+        display: inline-block;
+        padding-bottom: 10px;
+    }
+
+    .profile-info {
+        display: flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: var(--radius-md);
+        transition: background-color 0.2s;
+        background-color: var(--white);
+        border: 1px solid var(--border-color);
+    }
+
+    .profile-img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        margin-right: 8px;
+        object-fit: cover;
+    }
+
+    .profile-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--text-color);
+    }
+
+    /* Report Form Card */
+    .report-form-card {
+        background-color: var(--white);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        box-shadow: var(--shadow-md);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 24px;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .form-title span {
+        color: var(--primary-color);
+    }
+
+    .gradient-accent {
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        height: 4px;
+        width: 100%;
+        margin: 16px 0 24px 0;
+        border-radius: 2px;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-color);
+    }
+
+    .form-group .content-box {
+        width: 100%;
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        font-family: 'Pretendard', sans-serif;
+        font-size: 14px;
+        background-color: var(--light-gray);
+        min-height: 100px;
+    }
+
+    .item-container {
+        margin-bottom: 16px;
+    }
+
+    .progress-container {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 8px;
+    }
+
+    .progress-bar {
+        flex-grow: 1;
+        height: 8px;
+        background-color: var(--light-gray);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background-color: var(--primary-color);
+        border-radius: 4px;
+        width: 65%;
+    }
+
+    .progress-value {
+        font-weight: 600;
+        color: var(--primary-color);
+        min-width: 40px;
+        text-align: right;
+    }
+
+    /* Footer */
+    .footer {
+        text-align: center;
+        padding: 24px;
+        color: var(--gray-color);
+        font-size: 14px;
+        border-top: 1px solid var(--border-color);
+        margin-top: 48px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .report-form-card {
+            padding: 24px;
+        }
+    }
+
+    .team-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    /* 날짜 선택 관련 스타일 */
+    .date-selector {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 24px;
+        gap: 12px;
+    }
+
+    .date-selector button {
+        background-color: var(--white);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        padding: 6px 12px;
+        cursor: pointer;
+        color: var(--text-color);
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .date-selector button:hover {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+    }
+
+    .date-selector input[type="date"] {
+        padding: 6px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        font-family: 'Pretendard', sans-serif;
+        color: var(--text-color);
+    }
+
+    .date-selector .current-date {
+        font-weight: 600;
+        color: var(--primary-color);
+        min-width: 200px;
+        text-align: center;
+    }
+
+    /* AI 분석 섹션 스타일 */
+    .ai-analysis-section {
+        margin-top: 32px;
+        border-top: 1px solid var(--border-color);
+        padding-top: 24px;
+    }
+
+    .ai-analysis-toggle {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        padding: 12px 0;
+    }
+
+    .ai-analysis-toggle h3 {
+        font-size: 16px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ai-analysis-content {
+        padding: 16px;
+        background-color: var(--primary-light);
+        border-radius: var(--radius-md);
+        margin-top: 8px;
+        display: none;
+    }
+
+    .ai-analysis-content.visible {
+        display: block;
+    }
+
+    .loader {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .loader.visible {
+        display: block;
+    }
+    
+    #logo {
+  cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Main content area with report display -->
+    <div class="main-content">
+      <div class="page-header">
+        <h1 id="logo">Blitz-Q</h1>
+        <script>
+        document.getElementById("logo").addEventListener("click", function() {
+            window.location.href = "index.html";
+        });
+        </script>
+
+        <div class="action-buttons">
+          <div class="profile-area">
+            <div class="profile-info">
+              <div class="profile-img" style="background-color: var(--light-gray); display: flex; align-items: center; justify-content: center;">
+                <span>KM</span>
+              </div>
+              <span class="profile-name" id="userName">김민수</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 날짜 선택 UI 추가 -->
+      <div class="date-selector">
+        <button id="prevDate">&laquo; 이전</button>
+        <input type="date" id="dateInput">
+        <div class="current-date" id="currentDate">2025년 3월 29일 토요일</div>
+        <button id="nextDate">다음 &raquo;</button>
+      </div>
+
+      <!-- Report display card -->
+      <div class="report-form-card">
+        <div class="form-title">
+          <span>데일리 보고서</span>
+          <div class="date" id="reportDate">2025년 3월 29일 토요일</div>
+        </div>
+        <div class="gradient-accent"></div>
+
+        <div id="reportDisplay">
+          <!-- 로딩 표시기 -->
+          <div id="reportLoader" class="loader">
+            데이터를 불러오는 중...
+          </div>
+
+          <!-- Team display -->
+          <div class="form-group">
+            <label>팀</label>
+            <div class="team-badge" id="teamName">마케팅 팀</div>
+          </div>
+
+          <!-- Summary display -->
+          <div class="form-group">
+            <label>오늘의 작업을 알려드립니다.</label>
+            <div class="content-box" id="summary">
+              모바일 앱 출시를 위한 마케팅 전략 회의가 성공적으로 진행되었습니다. 주요 타겟 고객층을 재정의하고 SNS 광고 예산 분배 방안이 결정되었습니다.
+            </div>
+          </div>
+
+          <!-- Yesterday's tasks -->
+          <div class="form-group">
+            <label>어제 진행한 일</label>
+            <div class="content-box" id="yesterdayWork">
+              1. 경쟁사 마케팅 전략 분석 완료
+              2. 소셜 미디어 콘텐츠 캘린더 초안 작성
+              3. 디자인팀과 배너 디자인 요구사항 회의 진행
+            </div>
+          </div>
+
+          <!-- Today's tasks -->
+          <div class="form-group">
+            <label>오늘 할 일</label>
+            <div class="content-box" id="todayWork">
+              1. 이번 분기 마케팅 성과 보고서 작성
+              2. 신규 SNS 광고 캠페인 구성 완료
+              3. 앱 론칭 행사 기획안 검토
+              4. 인플루언서 마케팅 예산 계획 수립
+            </div>
+          </div>
+
+          <!-- Issues display -->
+          <div class="form-group">
+            <label>현재의 어려움</label>
+            <div class="content-box" id="issues">
+              SNS 플랫폼의 최근 정책 변경으로 광고 전략을 일부 수정해야 합니다. 특히 타겟팅 옵션이 제한되어 ROI에 영향을 줄 수 있습니다.
+            </div>
+          </div>
+
+          <!-- Assistance display -->
+          <div class="form-group">
+            <label>도움이 필요한 부분</label>
+            <div class="content-box" id="helpNeeded">
+              디자인팀의 리소스가 부족하여 마케팅 자료 제작이 지연되고 있습니다. 추가 디자이너 할당이나 외부 리소스 활용 방안 검토가 필요합니다.
+            </div>
+          </div>
+
+          <!-- Progress display -->
+          <div class="form-group">
+            <label>진행률</label>
+            <div class="progress-container">
+              <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 65%"></div>
+              </div>
+              <div class="progress-value" id="progressValue">65%</div>
+            </div>
+          </div>
+
+          <!-- AI 분석 결과 섹션 -->
+          <div class="ai-analysis-section">
+            <div class="ai-analysis-toggle" id="aiAnalysisToggle">
+              <h3>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+                  <path d="M12 16V12M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                AI 분석 결과 보기
+              </h3>
+              <span id="analysisToggleIcon">▼</span>
+            </div>
+            <div class="ai-analysis-content" id="aiAnalysisContent">
+              <div id="aiAnalysisLoader" class="loader">AI 분석 결과를 불러오는 중...</div>
+              <div id="aiAnalysis">
+                아직 분석 결과가 없습니다.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p>© 2025 Blitz-Q. 모든 권리 보유.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+// 현재 선택된 팀 ID와 사용자 ID
+let TEAM_ID = null;
+let USER_ID = null;
+
+// 인증 토큰
+let AUTH_TOKEN = null;
+
+// 날짜 관련 변수
+let currentDate = new Date();
+
+// 분석 결과 로드 여부 플래그
+let aiAnalysisLoaded = false;
+let currentReportId = null;
+
+// 테스트 모드 (서버 연결 실패 시 사용)
+let TEST_MODE = false;
+
+// 변수 추가 - 파일 상단 전역 변수 영역에 추가
+let isAiAnalysisOpen = true; // AI 분석 섹션 열림 상태
+let analysisCache = {}; // 날짜별 분석 결과 캐싱
+
+// 초기화 함수
+function init() {
+  // 인증 상태 확인
+  checkAuthStatus().then(isLoggedIn => {
+    if (isLoggedIn) {
+      // 로그인 상태면 보고서 관련 UI 초기화
+      initReportUI();
+    } else {
+      // 로그인 페이지로 리다이렉트
+      window.location.href = '/login.html';
+    }
+  });
+}
+
+// 인증 상태 확인
+async function checkAuthStatus() {
+  console.log('인증 상태 확인 중...');
+  
+  // 로컬 스토리지에서 토큰 가져오기
+  AUTH_TOKEN = localStorage.getItem('authToken') || getTokenFromCookie();
+  
+  if (!AUTH_TOKEN) {
+    console.log('인증 토큰 없음, 로그인 필요');
+    return false;
+  }
+  
+  try {
+    // 사용자 정보 가져오기
+    const response = await apiRequest('/auth/me');
+    
+    if (response.success && response.user) {
+      console.log('사용자 정보 가져옴:', response.user);
+      
+      // 사용자 정보 저장
+      USER_ID = response.user.id;
+      
+      // 프로필 정보 업데이트
+      updateProfileInfo(response.user);
+      
+      // 사용자의 팀 목록 가져오기
+      const teamsResponse = await apiRequest('/teams');
+      
+      if (teamsResponse.success && teamsResponse.teams && teamsResponse.teams.length > 0) {
+        // 첫 번째 팀 선택
+        TEAM_ID = teamsResponse.teams[0].id;
+        document.getElementById('teamName').textContent = teamsResponse.teams[0].name;
+      } else {
+        // 팀이 없는 경우 처리
+        showNoTeamMessage();
+      }
+      
+      return true;
+    } else {
+      console.log('유효한 사용자 정보가 없음');
+      // 토큰이 유효하지 않음
+      localStorage.removeItem('authToken');
+      return false;
+    }
+  } catch (error) {
+    console.error('인증 상태 확인 오류:', error);
+    
+    // 테스트 모드 제안
+    const useTestMode = confirm('서버 연결에 문제가 있습니다. 테스트 모드로 전환하시겠습니까?');
+    if (useTestMode) {
+      TEST_MODE = true;
+      TEAM_ID = 'team_123';
+      USER_ID = 'user_456';
+      
+      // 기본 사용자 프로필 설정
+      updateProfileInfo({
+        name: '테스트 사용자',
+        nickname: '테스터'
+      });
+      
+      return true;
+    }
+    
+    return false;
+  }
+}
+
+// 쿠키에서 토큰 가져오기
+function getTokenFromCookie() {
+  const cookieValue = document.cookie.split('; ')
+    .find(row => row.startsWith('auth_token='))
+    ?.split('=')[1];
+
+  return cookieValue || null;
+}
+
+// API 요청 함수
+async function apiRequest(endpoint, method = 'GET', data = null) {
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+
+  // 인증 토큰이 있으면 헤더에 추가
+  if (AUTH_TOKEN) {
+    headers['Authorization'] = `Bearer ${AUTH_TOKEN}`;
+  }
+
+  const options = {
+    method,
+    headers,
+    credentials: 'include' // 쿠키 포함
+  };
+
+  if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
+    options.body = JSON.stringify(data);
+  }
+
+  try {
+    console.log(`API 요청: ${method} ${endpoint}`);
+    
+    const response = await fetch(`/api${endpoint}`, options);
+    console.log(`API 응답 상태: ${response.status}`);
+
+    const responseData = await response.json();
+    console.log('API 응답 데이터:', responseData);
+
+    if (!response.ok) {
+      throw new Error(responseData.message || '요청 처리 중 오류가 발생했습니다');
+    }
+
+    return responseData;
+  } catch (error) {
+    console.error('API 요청 오류:', error);
+    throw error;
+  }
+}
+
+// initReportUI 함수 수정 - 초기화할 때 AI 분석 창을 열린 상태로 설정
+function initReportUI() {
+  // 날짜 선택 UI 초기화
+  updateDateDisplay();
+  
+  // 날짜 입력 필드 초기화 (오늘 날짜로)
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('dateInput').value = today;
+  
+  // 이벤트 리스너 등록
+  document.getElementById('prevDate').addEventListener('click', goToPreviousDay);
+  document.getElementById('nextDate').addEventListener('click', goToNextDay);
+  document.getElementById('dateInput').addEventListener('change', dateInputChanged);
+  document.getElementById('aiAnalysisToggle').addEventListener('click', toggleAiAnalysis);
+  
+  // AI 분석 창을 열린 상태로 설정 (추가된 부분)
+  const content = document.getElementById('aiAnalysisContent');
+  const icon = document.getElementById('analysisToggleIcon');
+  content.classList.add('visible');
+  icon.textContent = '▲';
+  
+  // 초기 데이터 로드
+  loadReportData(formatDateForAPI(currentDate));
+}
+
+// 이니셜 프로필 생성 함수
+function createInitialsProfile(name, size = 32) {
+  const initial = (name || '사용자').charAt(0).toUpperCase();
+  const colors = [
+    '#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#34495e',
+    '#16a085', '#27ae60', '#2980b9', '#8e44ad', '#2c3e50',
+    '#f1c40f', '#e67e22', '#e74c3c', '#95a5a6', '#f39c12',
+    '#d35400', '#c0392b', '#7f8c8d'
+  ];
+
+  // 이름에 기반한 일관된 색상 선택
+  const colorIndex = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
+  const backgroundColor = colors[colorIndex];
+
+  // 배경색에 따라 텍스트 색상 결정 (어두운 배경 = 흰색 텍스트, 밝은 배경 = 검은색 텍스트)
+  const getContrastColor = (hexColor) => {
+    // 16진수 색상을 RGB로 변환
+    const r = parseInt(hexColor.slice(1, 3), 16);
+    const g = parseInt(hexColor.slice(3, 5), 16);
+    const b = parseInt(hexColor.slice(5, 7), 16);
+
+    // 색상 밝기 계산 (0~255)
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+    // 밝기가 128 이상이면 어두운 텍스트, 미만이면 밝은 텍스트
+    return brightness >= 128 ? '#000000' : '#ffffff';
+  };
+
+  const textColor = getContrastColor(backgroundColor);
+
+  // 이니셜 프로필 요소 생성
+  const profileDiv = document.createElement('div');
+  profileDiv.className = 'initial-profile';
+  profileDiv.style.width = `${size}px`;
+  profileDiv.style.height = `${size}px`;
+  profileDiv.style.borderRadius = '50%';
+  profileDiv.style.backgroundColor = backgroundColor;
+  profileDiv.style.color = textColor;
+  profileDiv.style.display = 'flex';
+  profileDiv.style.alignItems = 'center';
+  profileDiv.style.justifyContent = 'center';
+  profileDiv.style.fontSize = `${size / 2}px`;
+  profileDiv.style.fontWeight = 'bold';
+  profileDiv.textContent = initial;
+
+  return profileDiv;
+}
+
+// 아바타 URL 처리 함수
+function getAvatarUrl(avatarPath) {
+  if (!avatarPath) return null;
+
+  // 이미 전체 URL인 경우 (http:// 또는 https://로 시작)
+  if (avatarPath.startsWith('http://') || avatarPath.startsWith('https://')) {
+    return avatarPath;
+  }
+
+  // 상대 경로인 경우 uploads 폴더 경로 추가
+  return `/uploads/${avatarPath}`;
+}
+
+// 프로필 정보 업데이트 (이미지 또는 이니셜)
+function updateProfileInfo(user) {
+  const userName = document.getElementById('userName');
+  const profileImgContainer = document.querySelector('.profile-img');
+  
+  if (userName) {
+    userName.textContent = user.nickname || user.name;
+  }
+  
+  if (profileImgContainer) {
+    // 이전 내용 제거
+    profileImgContainer.innerHTML = '';
+    
+    if (user.avatar) {
+      // 아바타 이미지가 있는 경우
+      const img = document.createElement('img');
+      img.src = getAvatarUrl(user.avatar);
+      img.alt = `${user.nickname || user.name} 프로필`;
+      img.style.width = '32px';
+      img.style.height = '32px';
+      img.style.borderRadius = '50%';
+      img.style.objectFit = 'cover';
+      
+      // 이미지 로드 실패 시 이니셜로 대체
+      img.onerror = function() {
+        const initials = createInitialsProfile(user.nickname || user.name, 32);
+        profileImgContainer.innerHTML = '';
+        profileImgContainer.appendChild(initials);
+      };
+      
+      profileImgContainer.appendChild(img);
+    } else {
+      // 아바타가 없는 경우, 이니셜로 표시
+      const displayName = user.nickname || user.name;
+      const initial = displayName.charAt(0).toUpperCase();
+      
+      // 이니셜을 표시하는 방법 1: 간단한 텍스트 (기존 스타일 유지)
+      if (profileImgContainer.style.display === 'flex') {
+        profileImgContainer.textContent = initial;
+      } else {
+        // 이니셜을 표시하는 방법 2: 이니셜 프로필 사용
+        const initials = createInitialsProfile(displayName, 32);
+        profileImgContainer.appendChild(initials);
+      }
+    }
+  }
+}
+
+// 팀이 없는 경우 메시지 표시
+function showNoTeamMessage() {
+  // 팀 정보 영역에 안내 메시지 표시
+  document.getElementById('teamName').textContent = '팀 없음';
+  
+  // 보고서 영역에 안내 메시지
+  document.getElementById('reportDisplay').innerHTML = `
+    <div style="text-align: center; padding: 30px;">
+      <h3 style="margin-bottom: 15px; color: var(--gray-color);">참여 중인 팀이 없습니다</h3>
+      <p style="margin-bottom: 20px;">팀에 참여하거나 새 팀을 만들어야 보고서를 작성할 수 있습니다.</p>
+      <button class="primary-btn" onclick="window.location.href = '/team.html'" style="background-color: var(--primary-color); color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">
+        팀 관리 페이지로 이동
+      </button>
+    </div>
+  `;
+}
+
+// 날짜 디스플레이 업데이트
+function updateDateDisplay() {
+  const options = { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric', 
+    weekday: 'long' 
+  };
+  const formattedDate = currentDate.toLocaleDateString('ko-KR', options);
+  
+  document.getElementById('currentDate').textContent = formattedDate;
+  document.getElementById('reportDate').textContent = formattedDate;
+  
+  // 날짜 입력 필드도 업데이트
+  document.getElementById('dateInput').value = formatDateForAPI(currentDate);
+  
+  // 내일 이후로는 다음 버튼 비활성화
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+  
+  if (currentDate >= tomorrow) {
+    document.getElementById('nextDate').disabled = true;
+  } else {
+    document.getElementById('nextDate').disabled = false;
+  }
+}
+
+// 이전 날짜로 이동
+function goToPreviousDay() {
+  currentDate.setDate(currentDate.getDate() - 1);
+  updateDateDisplay();
+  loadReportData(formatDateForAPI(currentDate));
+}
+
+// 다음 날짜로 이동
+function goToNextDay() {
+  // 내일 날짜를 초과하지 않도록 체크
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+  
+  if (currentDate < tomorrow) {
+    currentDate.setDate(currentDate.getDate() + 1);
+    updateDateDisplay();
+    loadReportData(formatDateForAPI(currentDate));
+  }
+}
+
+// 날짜 입력 필드 변경 시
+function dateInputChanged(e) {
+  const selectedDate = e.target.value;
+  currentDate = new Date(selectedDate);
+  updateDateDisplay();
+  loadReportData(selectedDate);
+}
+
+// API용 날짜 포맷 (YYYY-MM-DD)
+function formatDateForAPI(date) {
+  return date.toISOString().split('T')[0];
+}
+
+// 보고서 데이터 로드 - 날짜 확인 로직 추가
+async function loadReportData(date) {
+  try {
+    if (!TEAM_ID) {
+      console.error('팀 ID가 없습니다.');
+      return;
+    }
+    
+    // 로딩 표시 시작
+    document.getElementById('reportLoader').classList.add('visible');
+    
+    // API 호출
+    const response = await apiRequest(`/reports/${TEAM_ID}/user-latest?date=${date}`);
+    
+    // 로딩 표시 종료
+    document.getElementById('reportLoader').classList.remove('visible');
+    
+    if (response.success && response.report) {
+      // 데이터베이스의 생성 날짜와 선택한 날짜 비교
+      const reportDate = response.report.report_date;
+      
+      // 날짜가 다른 경우 (정확히 일치하는 것만 보여주기)
+      if (reportDate !== date) {
+        console.log(`선택한 날짜(${date})와 보고서 날짜(${reportDate})가 다릅니다.`);
+        displayNoReportData(date);
+        return;
+      }
+      
+      if (response.success && response.report) {
+        // 보고서 데이터 표시
+        displayReportData(response.report);
+        currentReportId = response.report.id;
+        aiAnalysisLoaded = false;
+        
+        // 날짜를 키로 사용해 캐시에서 이전에 로드한 분석 결과 확인
+        const dateKey = formatDateForAPI(currentDate);
+        if (analysisCache[dateKey]) {
+            // 캐시된 분석 결과가 있으면 바로 표시
+            document.getElementById('aiAnalysis').innerHTML = analysisCache[dateKey];
+            aiAnalysisLoaded = true;
+        }
+        
+        // AI 분석 섹션이 열려 있으면 자동으로 분석 결과 로드
+        if (isAiAnalysisOpen) {
+            const aiAnalysisContent = document.getElementById('aiAnalysisContent');
+            if (!aiAnalysisContent.classList.contains('visible')) {
+            aiAnalysisContent.classList.add('visible');
+            document.getElementById('analysisToggleIcon').textContent = '▲';
+            }
+            
+            // 캐시된 결과가 없으면 새로 로드
+            if (!aiAnalysisLoaded) {
+            loadAiAnalysis();
+            }
+        }
+        }
+
+      currentReportId = response.report.id;
+      aiAnalysisLoaded = false;
+    } else {
+      // 해당 날짜에 보고서가 없는 경우
+      displayNoReportData(date);
+    }
+  } catch (error) {
+    console.error('보고서 데이터 로드 오류:', error);
+    document.getElementById('reportLoader').classList.remove('visible');
+    
+    // 오류 메시지 표시
+    document.getElementById('reportDisplay').innerHTML = `
+      <div style="text-align: center; padding: 20px; color: #f04452;">
+        <p>데이터를 불러오는 중 오류가 발생했습니다.</p>
+        <button onclick="loadReportData('${date}')" 
+                style="margin-top: 10px; padding: 8px 16px; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">
+          다시 시도
+        </button>
+      </div>
+    `;
+  }
+}
+
+// 보고서 데이터 표시
+function displayReportData(report) {
+  // 요약
+  document.getElementById('summary').textContent = report.summary || '요약 정보가 없습니다.';
+  
+  // 어제 한 일
+  if (report.yesterday_work) {
+    if (Array.isArray(report.yesterday_work)) {
+      document.getElementById('yesterdayWork').innerHTML = report.yesterday_work
+        .map((item, index) => `${index + 1}. ${item}`)
+        .join('<br>');
+    } else {
+      document.getElementById('yesterdayWork').textContent = report.yesterday_work;
+    }
+  } else {
+    document.getElementById('yesterdayWork').textContent = '기록된 내용이 없습니다.';
+  }
+  
+  // 오늘 할 일
+  if (report.today_work) {
+    if (Array.isArray(report.today_work)) {
+      document.getElementById('todayWork').innerHTML = report.today_work
+        .map((item, index) => `${index + 1}. ${item}`)
+        .join('<br>');
+    } else {
+      document.getElementById('todayWork').textContent = report.today_work;
+    }
+  } else {
+    document.getElementById('todayWork').textContent = '기록된 내용이 없습니다.';
+  }
+  
+  // 이슈
+  if (report.issues && report.issues.length > 0) {
+    document.getElementById('issues').innerHTML = report.issues
+      .map(issue => `● ${issue.text || issue.title}`)
+      .join('<br>');
+  } else {
+    document.getElementById('issues').textContent = '현재 특별한 이슈가 없습니다.';
+  }
+  
+  // 도움 필요 사항
+  document.getElementById('helpNeeded').textContent = report.help_needed || '도움이 필요한 사항이 없습니다.';
+  
+  // 진행률
+  const progress = report.progress || 0;
+  document.getElementById('progressFill').style.width = `${progress}%`;
+  document.getElementById('progressValue').textContent = `${progress}%`;
+}
+
+// 보고서가 없는 경우 표시
+// 보고서가 없는 경우 표시
+function displayNoReportData(date) {
+  // 날짜 포맷팅 (YYYY-MM-DD → 2025년 3월 29일)
+  const dateObj = new Date(date);
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  const formattedDate = dateObj.toLocaleDateString('ko-KR', options);
+  
+  // 보고서 내용 초기화
+  document.getElementById('summary').textContent = `${formattedDate}에 작성된 보고서가 없습니다.`;
+  document.getElementById('yesterdayWork').textContent = '기록 없음';
+  document.getElementById('todayWork').textContent = '기록 없음';
+  document.getElementById('issues').textContent = '기록 없음';
+  document.getElementById('helpNeeded').textContent = '기록 없음';
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('progressValue').textContent = '0%';
+  
+  // 보고서 ID 및 분석 상태 초기화
+  currentReportId = null;
+  
+  // AI 분석 섹션 초기화
+  document.getElementById('aiAnalysis').textContent = '보고서가 없어 AI 분석이 불가능합니다.';
+  aiAnalysisLoaded = true;
+  
+  // 날짜 키
+  const dateKey = formatDateForAPI(dateObj);
+  
+  // 해당 날짜의 캐시 제거 (보고서가 없으므로)
+  if (analysisCache[dateKey]) {
+    delete analysisCache[dateKey];
+  }
+  
+  // AI 분석 섹션 토글 상태 유지
+  if (isAiAnalysisOpen) {
+    document.getElementById('aiAnalysisContent').classList.add('visible');
+    document.getElementById('analysisToggleIcon').textContent = '▲';
+  } else {
+    document.getElementById('aiAnalysisContent').classList.remove('visible');
+    document.getElementById('analysisToggleIcon').textContent = '▼';
+  }
+  
+  // 분석 로딩 표시 숨기기 (있을 경우)
+  const aiAnalysisLoader = document.getElementById('aiAnalysisLoader');
+  if (aiAnalysisLoader) {
+    aiAnalysisLoader.classList.remove('visible');
+  }
+  
+  // 분석 내용 표시 영역 보이게 설정
+  document.getElementById('aiAnalysis').style.display = 'block';
+}
+
+// AI 분석 결과 토글
+function toggleAiAnalysis() {
+  const content = document.getElementById('aiAnalysisContent');
+  const icon = document.getElementById('analysisToggleIcon');
+  
+  isAiAnalysisOpen = !content.classList.contains('visible');
+  
+  if (isAiAnalysisOpen) {
+    content.classList.add('visible');
+    icon.textContent = '▲';
+    
+    // 분석 결과 로드 (아직 로드되지 않았다면)
+    if (!aiAnalysisLoaded && currentReportId) {
+      loadAiAnalysis();
+    }
+  } else {
+    content.classList.remove('visible');
+    icon.textContent = '▼';
+  }
+}
+
+// AI 분석 결과 로드
+// AI 분석 결과 로드 - 개인 및 팀 분석 모두 가져오기
+async function loadAiAnalysis() {
+  if (!currentReportId || !TEAM_ID) {
+    document.getElementById('aiAnalysis').textContent = 'AI 분석이 불가능합니다. 보고서 ID가 없습니다.';
+    return;
+  }
+  
+  try {
+    // 로딩 표시 시작
+    document.getElementById('aiAnalysisLoader').classList.add('visible');
+    document.getElementById('aiAnalysis').style.display = 'none';
+    
+    // 개인 분석 API 호출
+    const individualResponse = await apiRequest(`/reports/${currentReportId}/analysis`);
+    
+    // 팀 분석 API 호출 (선택된 날짜 기준)
+    const dateStr = formatDateForAPI(currentDate);
+    const teamResponse = await apiRequest(`/reports/team/${TEAM_ID}/analysis?date=${dateStr}`);
+    
+    // 로딩 표시 종료
+    document.getElementById('aiAnalysisLoader').classList.remove('visible');
+    document.getElementById('aiAnalysis').style.display = 'block';
+    
+    // 두 분석 결과 모두 표시
+    displayCombinedAnalysis(individualResponse, teamResponse);
+
+    const dateKey = formatDateForAPI(currentDate);
+    const analysisContent = document.getElementById('aiAnalysis').innerHTML;
+    analysisCache[dateKey] = analysisContent;
+    
+    // 분석 결과 로드 완료
+    aiAnalysisLoaded = true;
+    
+  } catch (error) {
+    console.error('AI 분석 결과 로드 오류:', error);
+    document.getElementById('aiAnalysisLoader').classList.remove('visible');
+    document.getElementById('aiAnalysis').style.display = 'block';
+    document.getElementById('aiAnalysis').textContent = 'AI 분석 결과를 불러오는 중 오류가 발생했습니다.';
+    aiAnalysisLoaded = true;
+  }
+}
+
+// 개인 및 팀 분석 결과 통합 표시
+function displayCombinedAnalysis(individualResponse, teamResponse) {
+  let html = '';
+  
+  // 개인 분석 섹션
+  if (individualResponse.success && individualResponse.analysis) {
+    const analysis = individualResponse.analysis;
+    
+    html += '<div class="analysis-section individual-analysis">';
+    html += '<h3>개인 보고서 분석</h3>';
+    
+    if (analysis.summary) {
+      html += `<h4>요약</h4><p>${analysis.summary}</p>`;
+    }
+    
+    if (analysis.insights && analysis.insights.length > 0) {
+      html += '<h4>인사이트</h4><ul>';
+      analysis.insights.forEach(insight => {
+        html += `<li>${insight}</li>`;
+      });
+      html += '</ul>';
+    }
+    
+    if (analysis.recommendations && analysis.recommendations.length > 0) {
+      html += '<h4>추천사항</h4><ul>';
+      analysis.recommendations.forEach(rec => {
+        html += `<li>${rec}</li>`;
+      });
+      html += '</ul>';
+    }
+    
+    if (analysis.performance_review) {
+      html += `<h4>성과 분석</h4><p>${analysis.performance_review}</p>`;
+    }
+    
+    html += '</div>';
+  } else {
+    html += '<div class="analysis-section individual-analysis">';
+    html += '<h3>개인 보고서 분석</h3>';
+    html += '<p>개인 분석 결과를 찾을 수 없습니다.</p>';
+    html += '</div>';
+  }
+  
+  // 팀 분석 섹션
+  if (teamResponse.success && (teamResponse.analysis || teamResponse.reports)) {
+    html += '<div class="analysis-section team-analysis">';
+    html += '<h3>팀 전체 분석</h3>';
+    
+    // 팀 분석 API 응답 구조에 따라 추출 방식이 다를 수 있음
+    const teamData = teamResponse.analysis || 
+                     (teamResponse.summary && teamResponse.summary.aiAnalysis) || 
+                     {};
+    
+    if (teamData.team_overview || teamData.summary) {
+      html += `<h4>팀 개요</h4><p>${teamData.team_overview || teamData.summary}</p>`;
+    }
+    
+    // 공통 이슈
+    const commonIssues = teamData.common_issues || teamData.issues || [];
+    if (commonIssues.length > 0) {
+      html += '<h4>주요 공통 이슈</h4><ul>';
+      commonIssues.forEach(issue => {
+        html += `<li>${issue}</li>`;
+      });
+      html += '</ul>';
+    }
+    
+    // 우선 순위 작업
+    const priorityTasks = teamData.priority_tasks || teamData.tasks || [];
+    if (priorityTasks.length > 0) {
+      html += '<h4>우선 순위 작업</h4><ul>';
+      priorityTasks.forEach(task => {
+        html += `<li>${task}</li>`;
+      });
+      html += '</ul>';
+    }
+    
+    // 팀 진행 상황
+    if (teamData.progress_evaluation) {
+      html += `<h4>팀 진행 상황</h4><p>${teamData.progress_evaluation}</p>`;
+    }
+    
+    // 팀원별 보고서 요약
+    const teamReports = teamResponse.reports || [];
+    if (teamReports.length > 0) {
+      html += '<h4>팀원별 보고서 요약</h4>';
+      
+      teamReports.forEach(memberReport => {
+        const memberName = memberReport.user_name || '팀원';
+        html += `<div class="member-report-summary">`;
+        html += `<h5>${memberName}</h5>`;
+        
+        if (memberReport.analysis) {
+          html += `<p>${memberReport.analysis.summary || '요약 정보 없음'}</p>`;
+        } else {
+          html += `<p>분석 정보 없음</p>`;
+        }
+        
+        html += `<div class="member-progress">진행률: ${memberReport.progress || 0}%</div>`;
+        html += `</div>`;
+      });
+    }
+    
+    html += '</div>';
+  } else {
+    html += '<div class="analysis-section team-analysis">';
+    html += '<h3>팀 전체 분석</h3>';
+    html += '<p>팀 분석 결과를 찾을 수 없습니다.</p>';
+    html += '</div>';
+  }
+  
+  // 분석 섹션에 추가 스타일 적용
+  html += `
+    <style>
+      .analysis-section {
+        margin-bottom: 24px;
+        padding: 16px;
+        border-radius: 8px;
+      }
+      
+      .individual-analysis {
+        background-color: rgba(255, 122, 0, 0.1);
+      }
+      
+      .team-analysis {
+        background-color: rgba(255, 214, 0, 0.1);
+        margin-top: 24px;
+      }
+      
+      .analysis-section h3 {
+        margin-bottom: 16px;
+        color: var(--primary-color);
+      }
+      
+      .analysis-section h4 {
+        margin-top: 16px;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+      
+      .member-report-summary {
+        margin-top: 12px;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 6px;
+      }
+      
+      .member-report-summary h5 {
+        margin-bottom: 4px;
+        font-weight: 600;
+      }
+      
+      .member-progress {
+        margin-top: 8px;
+        font-size: 0.9em;
+        color: var(--gray-color);
+      }
+    </style>
+  `;
+  
+  // 내용 업데이트
+  document.getElementById('aiAnalysis').innerHTML = html || '분석 결과가 없습니다.';
+}
+
+// 로그아웃 버튼 이벤트 (있다면)
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', function() {
+    localStorage.removeItem('authToken');
+    window.location.href = '/login.html';
+  });
+}
+
+// 페이지 로드 시 초기화
+window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

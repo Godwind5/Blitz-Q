@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blitz-Q - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF7A00;  /* Vibrant orange */
+            --primary-dark: #E86D00;  /* Darker orange */
+            --primary-light: #FFF3E0;  /* Light orange/cream */
+            --primary-bg: #FFFAF0;  /* Warm light cream */
+            --secondary: #FFD600;  /* Vibrant yellow */
+            --secondary-dark: #E6C200;  /* Darker yellow */
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --gray-50: #FFFBF5;
+            --gray-100: #F5F1EA;  /* Warmer light gray */
+            --gray-200: #EEEAE0;  /* Warmer gray for borders */
+            --gray-300: #DDD8CE;
+            --gray-400: #9CA193;
+            --gray-500: #8D8883;  /* Warmer medium gray */
+            --gray-600: #5A554F;
+            --gray-700: #4A453F;
+            --gray-800: #3D3D3D;  /* Text color */
+            --gray-900: #2D2D2D;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            background-color: var(--gray-100);
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            color: var(--gray-800);
+            font-size: 14px;
+            overflow-y: auto;
+        }
+        
+        .login-container {
+            max-width: 380px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }        
+        
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: none;
+            background-color: white;
+            margin-bottom: 0.75rem;
+            width: 100%;
+        }
+        
+        .card-header {
+            /* Reversed gradient direction - yellow to orange */
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            text-align: center;
+            padding: 1.25rem 1rem;
+            border-bottom: none;
+        }
+        
+        .logo-container {
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .logo-image {
+            width: 50%;
+            height: auto;
+            object-fit: contain;
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 50%;
+            /* Add shadow to logo */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 
+                        0 0 15px rgba(255, 255, 255, 0.3);
+            padding: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .logo-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 
+                        0 0 20px rgba(255, 255, 255, 0.4);
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            padding: 10px;
+            height: 52px;
+            width: 52px;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .card-header h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.35rem;
+            font-weight: 700;
+        }
+        
+        /* Enhanced system status styling */
+        .system-status {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
+            position: relative;
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--gray-500);
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--gray-300);
+        }
+        
+        .divider span {
+            padding: 0 0.75rem;
+            font-size: 0.85rem;
+        }
+        
+        .btn-google {
+            background-color: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+            padding: 0.65rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn-google:hover {
+            background-color: var(--gray-50);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-google .google-icon {
+            height: 20px;
+            width: 20px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 0.35rem;
+            font-size: 0.95rem;
+        }
+        
+        .form-control {
+            padding: 0.65rem 0.85rem;
+            border-radius: 8px;
+            border: 1px solid var(--gray-300);
+            font-size: 0.95rem;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.25);
+        }
+        
+        .input-group-text {
+            background-color: white;
+            border-left: none;
+            padding: 0.65rem 0.85rem;
+            font-size: 0.95rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            padding: 0.65rem 1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            box-shadow: 0 2px 5px rgba(232, 109, 0, 0.35);
+        }
+        
+        .remember-me {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 0.75rem;
+        }
+        
+        .footer-links a {
+            color: var(--gray-600);
+            margin: 0 0.5rem;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+        }
+        
+        .modal-header {
+            background-color: var(--primary-light);
+            border-bottom: none;
+            padding: 1.25rem;
+        }
+        
+        .modal-title {
+            color: var(--primary-dark);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .modal-body {
+            padding: 1.25rem;
+        }
+
+        .text-primary {
+            color: var(--primary) !important;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+            color: var(--gray-800);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+            border-color: var(--secondary-dark);
+        }
+
+        /* 추가된 효과 */
+        .card {
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* 그라데이션 하이라이트 */
+        .gradient-highlight {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gradient-highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            /* Also reversed gradient direction here */
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+        }
+
+        /* Always keep the login form centered */
+        @media (max-height: 700px) {
+            body {
+                align-items: center; /* Keep centered vertically */
+                padding-top: 0; /* Remove top padding */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="card">
+            <div class="card-header">
+                <div class="logo-container">
+                    <img src="/images/logo.png" alt="Blitz-Q 로고" class="logo-image">
+                </div>
+                <h3>Blitz-Q</h3>
+                <p class="system-status">시스템 가동. 준비 완료.</p>
+            </div>
+            <div class="card-body">
+                <button id="googleLogin" class="btn btn-google">
+                    <div class="google-icon">
+                        <i class="fab fa-google"></i>
+                    </div>
+                    Google 계정으로 로그인
+                </button>
+                
+                <div class="text-center mt-3">
+                    <p class="mb-0" style="font-size: 0.9rem;">계정이 없으신가요? <a href="#" id="showSignup" class="fw-bold text-primary">회원가입</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 회원가입 모달 -->
+    <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header gradient-highlight">
+                    <h5 class="modal-title" id="signupModalLabel">회원가입</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="signupForm">
+                        <div class="mb-3">
+                            <label for="signupName" class="form-label">이름</label>
+                            <input type="text" class="form-control" id="signupName" placeholder="실명을 입력하세요" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupEmail" class="form-label">이메일</label>
+                            <input type="email" class="form-control" id="signupEmail" placeholder="이메일 주소" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupPassword" class="form-label">비밀번호</label>
+                            <input type="password" class="form-control" id="signupPassword" placeholder="8자 이상의 비밀번호" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupPasswordConfirm" class="form-label">비밀번호 확인</label>
+                            <input type="password" class="form-control" id="signupPasswordConfirm" placeholder="비밀번호 재입력" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="termsCheck" required>
+                            <label class="form-check-label" for="termsCheck">이용약관 및 개인정보처리방침에 동의합니다</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">가입하기</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="/js/login.js"></script>
+</body>
+</html>

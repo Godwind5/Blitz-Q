@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blitz-Q</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <!-- 로딩 스피너를 위한 추가 스타일 -->
+  <style>
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      text-align: center;
+      color: var(--gray-color);
+      margin: 10px 0;
+    }
+    
+    /* 이미지 문제 해결을 위한 플레이스홀더 스타일 */
+    .placeholder-img {
+      background-color: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 사이드바 -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>나의 팀</h2>
+        <button class="add-group-btn">+ 팀 만들기</button>
+      </div>
+      <div class="group-list">
+        <!-- 팀 목록이 자바스크립트로 로드됩니다 -->
+        <div id="teams-loading" class="loading-text">팀 목록 로딩 중...</div>
+      </div>
+    </div>
+
+    <!-- 메인 영역 -->
+    <div class="main-content">
+      <div class="group-header">
+        <h1 id="currentGroupName">팀 선택</h1>
+        <div class="group-actions">
+        <!-- 알림 아이콘 추가 -->
+        <div class="notification-container">
+          <button class="notification-btn" title="알림">
+            <svg class="notification-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="notification-badge" id="notificationBadge">0</span>
+          </button>
+          <div class="notification-dropdown" id="notificationDropdown">
+            <div class="notification-header">
+              <h4>새로운 알림</h4>
+              <button class="clear-all-btn">모두 읽음</button>
+            </div>
+            <div class="notification-list" id="notificationList">
+              <!-- 알림 내용이 여기에 동적으로 추가됩니다 -->
+              <div class="empty-notification">새 알림이 없습니다</div>
+            </div>
+          </div>
+        </div>
+          <button class="add-report-btn" disabled title="로그인이 필요합니다">+ 보고서 작성</button>
+          <button class="invite-btn">초대하기</button>
+          <button class="code-input-btn">코드 입력</button>
+          <button class="dashboard-btn" id="dashboardBtn">대시보드</button>
+          <script>
+            document.getElementById("dashboardBtn").addEventListener("click", function() {
+              window.location.href = "report.html";
+            });
+          </script>
+          
+          <!-- 로그인 영역 (비로그인 상태) -->
+          <div class="auth-area" id="authArea">
+            <button class="login-btn" id="loginBtn">로그인</button>
+          </div>
+          
+          <!-- 프로필 영역 (로그인 상태) -->
+          <div class="profile-area" id="profileArea" style="display: none;">
+            <div class="profile-dropdown">
+              <div class="profile-info">
+                <!-- 프로필 이미지 - 서버에서 불러오지 못하면 대체 이미지로 표시 -->
+                <div class="profile-img placeholder-img" style="width: 36px; height: 36px; border-radius: 50%;">
+                  <span>사용자</span>
+                </div>
+                <span class="profile-name" id="profileName">사용자</span>
+              </div>
+              <div class="profile-menu">
+                <button class="logout-btn" id="logoutBtn">로그아웃</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 팀원 목록 -->
+      <div class="team-members">
+        <h3>팀원 목록</h3>
+        <div class="member-grid">
+          <div id="members-loading" class="loading-text">팀을 선택하세요</div>
+        </div>
+      </div>
+
+      <!-- 가로 3분할 섹션 -->
+      <div class="main-sections">
+        <!-- 팀원 To-Do List -->
+        <div class="section" id="todoSection">
+          <h3>팀원 To-Do List</h3>
+          <div class="individual-todos-list">
+            <div id="todos-loading" class="loading-text">팀을 선택하세요</div>
+          </div>
+        </div>
+        <!-- 팀원별 이슈 및 문제점 -->
+        <div class="section" id="issuesSection">
+          <h3>팀원 별 이슈 및 문제점</h3>
+          <div class="report-issues-list">
+            <div id="issues-loading" class="loading-text">팀을 선택하세요</div>
+          </div>
+        </div>
+        <!-- AI 해결방안 및 조언 -->
+        <div class="section" id="aiSection">
+          <h3>AI 제시 해결방안 및 조언 <button class="analyze-btn">분석</button></h3>
+          <div id="aiSuggestionsDisplay">
+            <p style="color: var(--gray-color); text-align: center;">
+              '분석' 버튼을 클릭하여 AI의 해결방안과 조언을 얻으세요.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 팀 만들기/수정 모달 -->
+  <div id="groupModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">팀 만들기</h3>
+        <button class="modal-close" id="groupModalCloseBtn">&times;</button>
+      </div>
+      <input type="text" id="groupNameInput" placeholder="그룹 이름" />
+      <div class="modal-buttons">
+        <button id="cancelGroupModal">취소</button>
+        <button id="confirmGroupModal">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 보고서 작성 모달 -->
+  <div id="reportModal" class="modal">
+    <div class="modal-content report-modal-content">
+      <div class="modal-header">
+        <h3 id="reportModalTitle">데일리 보고서 작성</h3>
+        <button class="modal-close" id="reportCloseBtn">&times;</button>
+      </div>
+      <form id="reportForm">
+        <label for="summaryInput">오늘 요약</label>
+        <textarea id="summaryInput" class="report-input" placeholder="오늘 작업의 요약을 입력하세요" required></textarea>
+
+        <div class="input-with-add-inline">
+          <label>어제 진행한 일</label>
+          <div class="inline-buttons">
+            <button type="button" id="addYesterdayBtn" class="add-item-btn-inline">항목 추가</button>
+            <button type="button" id="removeYesterdayBtn" class="remove-item-btn-inline">항목 삭제</button>
+          </div>
+        </div>
+        <div id="yesterdayContainer">
+          <textarea class="yesterdayInput report-input" placeholder="어제 진행한 작업을 입력하세요" required></textarea>
+        </div>
+
+        <div class="input-with-add-inline">
+          <label>오늘 할 일</label>
+          <div class="inline-buttons">
+            <button type="button" id="addTodayBtn" class="add-item-btn-inline">항목 추가</button>
+            <button type="button" id="removeTodayBtn" class="remove-item-btn-inline">항목 삭제</button>
+          </div>
+        </div>
+        <div id="todayContainer">
+          <textarea class="todayInput report-input" placeholder="오늘 진행할 작업을 입력하세요" required></textarea>
+        </div>
+
+        <label for="issuesInput">현재의 어려움</label>
+        <textarea id="issuesInput" class="report-input" placeholder="현재 겪고 있는 어려움을 입력하세요"></textarea>
+
+        <label for="assistanceInput">도움이 필요한 부분</label>
+        <textarea id="assistanceInput" class="report-input" placeholder="도움이 필요한 부분을 입력하세요"></textarea>
+
+        <label for="progressInput">진행률 (%)</label>
+        <input type="number" id="progressInput" min="0" max="100" value="0" required />
+
+        <div class="form-option">
+          </label>
+        </div>
+
+        <div class="modal-buttons">
+          <button type="button" id="reportCancelBtn">취소</button>
+          <button type="submit">제출</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 초대 모달: 코드(12자리) 표시 -->
+  <div id="inviteModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>팀원 초대</h3>
+        <button class="modal-close" id="inviteCloseBtn">&times;</button>
+      </div>
+      <p>아래 코드를 팀원에게 공유하여 초대할 수 있습니다.</p>
+      <input type="text" id="inviteLink" value="12자리 코드" readonly />
+      <button id="copyInviteBtn">코드 복사</button>
+    </div>
+  </div>
+
+  <!-- 코드 입력 모달 -->
+  <div id="codeInputModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>초대 코드 입력</h3>
+        <button class="modal-close" id="codeInputCloseBtn">&times;</button>
+      </div>
+      <p>팀 초대 코드를 입력하세요.</p>
+      <div class="code-input-container">
+        <input type="text" id="codeInputField" maxlength="12" placeholder="12자리 코드" />
+      </div>
+      <div class="modal-buttons">
+        <button id="cancelCodeInputModal">취소</button>
+        <button id="confirmCodeInputModal">참여하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 코멘트 모달 -->
+  <div id="commentModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="commentModalTitle">이슈 코멘트</h3>
+        <button class="modal-close" id="commentCloseBtn">&times;</button>
+      </div>
+      <div id="commentList"></div>
+      <textarea id="newCommentInput" placeholder="새로운 코멘트를 작성하세요."></textarea>
+      <div class="modal-buttons">
+        <button type="button" id="commentCancelBtn">취소</button>
+        <button id="submitCommentBtn">댓글 추가</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 오류 알림 모달 -->
+  <div id="errorModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>오류 발생</h3>
+        <button class="modal-close" id="errorCloseBtn">&times;</button>
+      </div>
+      <p id="errorMessage">요청 처리 중 오류가 발생했습니다.</p>
+      <div class="modal-buttons">
+        <button id="errorOkBtn">확인</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 확인 모달 -->
+  <div id="confirmModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="confirmTitle">확인</h3>
+        <button class="modal-close" id="confirmCloseBtn">&times;</button>
+      </div>
+      <p id="confirmMessage">정말로 이 작업을 수행하시겠습니까?</p>
+      <div class="modal-buttons">
+        <button id="confirmCancelBtn">취소</button>
+        <button id="confirmOkBtn" class="primary-btn">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 자바스크립트 로드 -->
+  <script src="/js/script.js"></script>
+  
+  <!-- 오류 모달 관련 스크립트 -->
+  <script>
+    // 오류 모달 관련 기능
+    document.addEventListener('DOMContentLoaded', function() {
+      const errorModal = document.getElementById('errorModal');
+      const errorCloseBtn = document.getElementById('errorCloseBtn');
+      const errorOkBtn = document.getElementById('errorOkBtn');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      // 전역 오류 처리 함수
+      window.showError = function(message) {
+        errorMessage.textContent = message || '요청 처리 중 오류가 발생했습니다.';
+        errorModal.style.display = 'flex';
+      };
+      
+      // 오류 모달 닫기
+      function closeErrorModal() {
+        errorModal.style.display = 'none';
+      }
+      
+      if (errorCloseBtn) {
+        errorCloseBtn.addEventListener('click', closeErrorModal);
+      }
+      
+      if (errorOkBtn) {
+        errorOkBtn.addEventListener('click', closeErrorModal);
+      }
+      
+      // 모달 외부 클릭 시 닫기
+      errorModal.addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeErrorModal();
+        }
+      });
+      
+      // 404 에러 이미지 대체 함수
+      function handleImageError() {
+        // 모든 이미지에 onerror 이벤트 처리
+        document.querySelectorAll('img').forEach(img => {
+          img.onerror = function() {
+            // 이미지 로드 실패 시 placeholder로 대체
+            const parent = this.parentElement;
+            const alt = this.alt || '이미지';
+            const width = this.width || 36;
+            const height = this.height || 36;
+            
+            const placeholder = document.createElement('div');
+            placeholder.className = 'placeholder-img';
+            placeholder.style.width = width + 'px';
+            placeholder.style.height = height + 'px';
+            placeholder.style.borderRadius = this.style.borderRadius || '0';
+            placeholder.innerHTML = `<span>${alt}</span>`;
+            
+            if (parent) {
+              parent.replaceChild(placeholder, this);
+            }
+          };
+        });
+      }
+      
+      // 페이지 로드 시 이미지 에러 핸들러 등록
+      handleImageError();
+      
+      // 동적으로 추가되는 이미지를 위한 MutationObserver
+      const observer = new MutationObserver(function(mutations) {
+        handleImageError();
+      });
+      
+      observer.observe(document.body, { 
+        childList: true, 
+        subtree: true 
+      });
+    });
+  </script>
+  <script src="/js/ReportAnalysisComponent.js"></script>
+</body>
+</html>

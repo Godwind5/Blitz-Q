@@ -44,7 +44,7 @@ This phrase comes up in every team project: "What's our team doing?" Blitz-Q was
 - **Node.js** + **Express.js**: Robust server architecture
 - **SQLite3**: Lightweight database (for development/testing)
 - **JWT**: Secure authentication system
-- **Passport.js**: Social login integration
+- **Google OAuth 2.0**: Social login integration
 
 ### Frontend
 - **Vanilla JavaScript**: Optimized performance with pure JavaScript

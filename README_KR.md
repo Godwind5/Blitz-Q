@@ -44,7 +44,7 @@
 - **Node.js** + **Express.js**: 견고한 서버 아키텍처
 - **SQLite3**: 경량화된 데이터베이스 (개발/테스트용)
 - **JWT**: 안전한 인증 시스템
-- **Passport.js**: 소셜 로그인 통합
+- **Google OAuth 2.0**: 소셜 로그인 통합
 
 ### Frontend
 - **Vanilla JavaScript**: 순수 자바스크립트로 최적화된 성능

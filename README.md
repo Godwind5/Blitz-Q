@@ -189,10 +189,6 @@ An innovative collaboration tool created by **Team Shinbaram**.
 - **Frontend**: Intuitive and responsive user interface design
 - **Planning**: Feature design reflecting real workplace needs
 
-## 📄 License
-
-This project is under the MIT License. See the [LICENSE](LICENSE) file for details.
-
 ## 🤝 Contributing
 
 Join us in advancing Blitz-Q!
